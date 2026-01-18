@@ -19,6 +19,4 @@ app.get("/", (req, res) => {
   res.send("CarbonPay backend running");
 });
 
-app.listen(PORT, () => {
-  console.log(`Backend running on http://localhost:${PORT}`);
-});
+app.listen(PORT, () => console.log(`Backend running on http://localhost:${PORT}`));
