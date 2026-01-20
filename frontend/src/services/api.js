@@ -9,6 +9,15 @@ export async function login(email) {
   return res.json();
 }
 
+export async function googleLogin(id_token) {
+  const res = await fetch(`${API}/auth/google`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ id_token })
+  });
+  return res.json();
+}
+
 export async function getWallet() {
   const res = await fetch(`${API}/wallet`);
   return res.json();
