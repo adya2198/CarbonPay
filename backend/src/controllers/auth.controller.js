@@ -2,11 +2,11 @@ import { store } from "../data/store.js";
 import { OAuth2Client } from "google-auth-library";
 
 export function login(req, res) {
-  const { email } = req.body;
-  if (!email) return res.status(400).json({ message: "Email required" });
-  store.user.email = email;
-  res.json({ user: store.user, message: "Login successful" });
+  return res.status(401).json({
+    message: "Email/password login is disabled. Use Google sign-in only."
+  });
 }
+
 
 // Google sign-in: verify id_token and return user
 export async function googleLogin(req, res) {
