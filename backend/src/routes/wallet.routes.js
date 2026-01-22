@@ -1,14 +1,11 @@
 import express from "express";
-import {
-  getWallet,
-  mintTokens,
-  spendTokens,
-} from "../controllers/wallet.controller.js";
+import { getWallet, mintTokens, spendTokens } from "../controllers/wallet.controller.js";
+import { verifyFirebaseToken } from "../middleware/authMiddleware.js";
 
 const router = express.Router();
 
-router.get("/", getWallet);
-router.post("/mint", mintTokens);
-router.post("/spend", spendTokens);
+router.get("/", verifyFirebaseToken, getWallet);
+router.post("/mint", verifyFirebaseToken, mintTokens);
+router.post("/spend", verifyFirebaseToken, spendTokens);
 
 export default router;
