@@ -1,69 +1,45 @@
-// frontend/src/pages/LoginPage.jsx
-import React, { useState } from "react";
+// src/pages/LoginPage.jsx
+import React from "react";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "../context/AuthContext";
-import { login as apiLogin } from "../services/api";
+import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
+import { auth } from "../firebase";
+import { loginWithGoogle } from "../services/api";
 
 export default function LoginPage() {
-  const [email, setEmail] = useState("");
-  const { signInWithGoogle } = useAuth();
   const navigate = useNavigate();
 
-  async function handleGoogleSignIn() {
+  async function signIn() {
     try {
-      await signInWithGoogle();
-      navigate("/");
-    } catch (err) {
-      console.error("Google sign-in failed", err);
-      alert("Google sign-in failed. See console for details.");
-    }
-  }
+      const provider = new GoogleAuthProvider();
+      await signInWithPopup(auth, provider);
 
-  async function handleEmailLogin(e) {
-    e.preventDefault();
-    try {
-      const data = await apiLogin(email);
-      // apiLogin sets backend user; frontend auth remains mock — unless you want to sign up via firebase email/password
-      // Here we simply set user via backend sync; in practice prefer Firebase for real auth flows.
+      // initialize user doc in Firestore
+      await loginWithGoogle();
+
+      // navigate after auth state updated
       navigate("/");
-    } catch (err) {
-      console.error("Email login failed", err);
-      alert("Email login failed");
+    } catch (error) {
+      console.error("Google Sign-In failed:", error);
+      alert("Google Sign-In failed. See console for details.");
     }
   }
 
   return (
     <main className="min-h-screen flex items-center justify-center bg-gray-50">
-      <div className="card p-8 w-full max-w-md">
-        <h2 className="text-2xl font-bold mb-4">Sign In</h2>
+      <div className="p-8 card w-full max-w-md shadow-lg rounded-xl bg-white">
+        <h1 className="text-2xl font-bold mb-6 text-center">Welcome to CarbonPay</h1>
 
-        <div className="mb-4">
-          <button
-            onClick={handleGoogleSignIn}
-            className="btn-primary w-full py-3 flex items-center justify-center gap-3"
-          >
-            <img
-              src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg"
-              alt="Google"
-              className="w-5 h-5"
-            />
-            Sign in with Google
-          </button>
-        </div>
-
-        {/* <div className="text-center text-sm text-gray-500 mb-4">or sign in with email</div>
-
-        <form onSubmit={handleEmailLogin}>
-          <input
-            className="input mb-4"
-            placeholder="your email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
+        <button
+          onClick={signIn}
+          className="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold flex items-center justify-center rounded-xl gap-3 transition"
+        >
+          <img
+            src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg"
+            alt="Google"
+            className="w-5 h-5"
           />
-
-          <button className="btn-secondary w-full">Login with Email</button>
-        </form> */}
+          Continue with Google
+        </button>
       </div>
     </main>
   );

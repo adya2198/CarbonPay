@@ -1,73 +1,53 @@
-import { getAuth } from "firebase/auth";
+// src/services/api.js
+import { auth } from "../firebase";
+import {
+  initializeUser,
+  getWallet as dbGetWallet,
+  mintTokens as dbMint,
+  spendTokens as dbSpend,
+  getTransactions as dbGetTxns,
+} from "./db";
 
-const API = "http://localhost:5000/api";
+function uid() {
+  return auth.currentUser?.uid || null;
+}
 
-async function getToken() {
-  const auth = getAuth();
+/**
+ * Call this immediately after successful Firebase sign in (popup).
+ * Ensures user doc exists in Firestore.
+ */
+export async function loginWithGoogle() {
   const user = auth.currentUser;
-  if (!user) return null;
-  return await user.getIdToken();
-}
-
-export async function login(email) {
-  const res = await fetch(`${API}/auth/login`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ email })
-  });
-  return res.json();
-}
-
-export async function googleLogin(id_token) {
-  const res = await fetch(`${API}/auth/google`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ id_token })
-  });
-  return res.json();
+  if (!user) throw new Error("No authenticated user");
+  await initializeUser(user.uid, user.email || null);
+  return {
+    uid: user.uid,
+    name: user.displayName,
+    email: user.email,
+    photoURL: user.photoURL,
+  };
 }
 
 export async function getWallet() {
-  const token = await getToken();
-  const res = await fetch(`${API}/wallet`, {
-    headers: { Authorization: `Bearer ${token}` }
-  });
-  return res.json();
+  const id = uid();
+  if (!id) throw new Error("Not authenticated");
+  return await dbGetWallet(id);
 }
 
-
-export async function mintTokens(treeCount) {
-  const token = await getToken();
-  const res = await fetch(`${API}/wallet/mint`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
-    },
-    body: JSON.stringify({ treeCount }),
-  });
-  return res.json();
+export async function mintTokens(amount) {
+  const id = uid();
+  if (!id) throw new Error("Not authenticated");
+  return await dbMint(id, amount);
 }
-
 
 export async function spendTokens(amount) {
-  const token = await getToken();
-  const res = await fetch(`${API}/wallet/spend`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
-    },
-    body: JSON.stringify({ amount }),
-  });
-  return res.json();
+  const id = uid();
+  if (!id) throw new Error("Not authenticated");
+  return await dbSpend(id, amount);
 }
 
 export async function getTransactions() {
-  const token = await getToken();
-  const res = await fetch(`${API}/transactions`, {
-    headers: { Authorization: `Bearer ${token}` }
-  });
-  return res.json();
+  const id = uid();
+  if (!id) throw new Error("Not authenticated");
+  return await dbGetTxns(id);
 }
-
