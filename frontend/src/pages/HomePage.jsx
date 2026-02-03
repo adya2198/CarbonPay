@@ -2,13 +2,15 @@
 import React, { useEffect, useState } from "react";
 import { useAuth } from "../context/AuthContext";
 import { getWallet, mintTokens, spendTokens, getTransactions } from "../services/api";
+import { useNavigate } from "react-router-dom";
 
 export default function HomePage() {
   const { user, logout } = useAuth();
   const [balance, setBalance] = useState(null);
   const [loading, setLoading] = useState(true);
   const [txns, setTxns] = useState([]);
-
+  const navigate = useNavigate();
+  
   useEffect(() => {
     async function loadAll() {
       try {
@@ -79,6 +81,7 @@ export default function HomePage() {
         <div className="flex gap-4 mb-6">
           <button onClick={() => handleMint(5)} className="flex-1 py-3 bg-green-600 hover:bg-green-700 text-white rounded-lg">Mint +5</button>
           <button onClick={() => handleSpend(5)} className="flex-1 py-3 bg-red-600 hover:bg-red-700 text-white rounded-lg">Spend -5</button>
+          <button onClick={() => navigate("/transactions")} className="w-full py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg font-semibold">View Transactions</button>
         </div>
 
         <div className="mb-4">
