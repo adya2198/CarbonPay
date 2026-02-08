@@ -82,6 +82,9 @@ export default function HomePage() {
           <button onClick={() => handleMint(5)} className="flex-1 py-3 bg-green-600 hover:bg-green-700 text-white rounded-lg">Mint +5</button>
           <button onClick={() => handleSpend(5)} className="flex-1 py-3 bg-red-600 hover:bg-red-700 text-white rounded-lg">Spend -5</button>
           <button onClick={() => navigate("/transactions")} className="w-full py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg font-semibold">View Transactions</button>
+          <button onClick={() => navigate("/add-tree")} className="flex-1 py-3 bg-yellow-600 hover:bg-yellow-700 text-white rounded-lg">Add Trees</button>
+          <button onClick={() => navigate("/my-trees")} className="flex-1 py-3 bg-purple-600 hover:bg-purple-700 text-white rounded-lg">My Trees</button>
+          <button onClick={() => navigate("/transactions")} className="flex-1 py-3 bg-pink-600 hover:bg-pink-700 text-white rounded-lg">Transactions</button>
         </div>
 
         <div className="mb-4">

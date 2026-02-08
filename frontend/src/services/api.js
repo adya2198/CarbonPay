@@ -6,16 +6,14 @@ import {
   mintTokens as dbMint,
   spendTokens as dbSpend,
   getTransactions as dbGetTxns,
+  submitTree as dbSubmitTree,
+  getUserTrees as dbGetUserTrees,
 } from "./db";
 
 function uid() {
   return auth.currentUser?.uid || null;
 }
 
-/**
- * Call this immediately after successful Firebase sign in (popup).
- * Ensures user doc exists in Firestore.
- */
 export async function loginWithGoogle() {
   const user = auth.currentUser;
   if (!user) throw new Error("No authenticated user");
@@ -50,4 +48,18 @@ export async function getTransactions() {
   const id = uid();
   if (!id) throw new Error("Not authenticated");
   return await dbGetTxns(id);
+}
+
+/** NEW: submit a tree and auto-mint */
+export async function submitTree(tree) {
+  const id = uid();
+  if (!id) throw new Error("Not authenticated");
+  return await dbSubmitTree(id, tree);
+}
+
+/** NEW: get user's trees */
+export async function getUserTrees() {
+  const id = uid();
+  if (!id) throw new Error("Not authenticated");
+  return await dbGetUserTrees(id);
 }
