@@ -41,7 +41,17 @@ export async function getWallet(uid) {
   if (!uid) throw new Error("UID is required");
   const snap = await getDoc(doc(db, "users", uid));
   if (!snap.exists()) return { balance: 0 };
-  return snap.data();
+  const data = snap.data() || {};
+  const balance = (() => {
+    if (typeof data.balance === "number") return data.balance;
+    if (typeof data.balance === "string" && data.balance.trim() !== "") {
+      const n = Number(data.balance);
+      return Number.isFinite(n) ? n : 0;
+    }
+    return 0;
+  })();
+
+  return { ...data, balance };
 }
 
 /**

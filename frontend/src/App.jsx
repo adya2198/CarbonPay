@@ -7,6 +7,8 @@ import { AuthProvider } from "./context/AuthContext";
 import AddTreePage from "./pages/AddTreePage";
 import MyTreesPage from "./pages/MyTreesPage";
 import TransactionsPage from "./pages/TransactionsPage"; // if you already added it
+import ProfilePage from "./pages/ProfilePage";
+import NavBar from "./components/NavBar";
 
 export default function App() {
   return (
@@ -23,6 +25,15 @@ export default function App() {
             }
           />
 
+          <Route
+            path="/profile"
+            element={
+              <ProtectedRoute>
+                <ProfilePage />
+              </ProtectedRoute>
+            }
+          />
+          
           <Route
             path="/add-tree"
             element={

@@ -29,7 +29,8 @@ export async function loginWithGoogle() {
 export async function getWallet() {
   const id = uid();
   if (!id) throw new Error("Not authenticated");
-  return await dbGetWallet(id);
+  const w = await dbGetWallet(id);
+  return { balance: w?.balance ?? 0, ...w };
 }
 
 export async function mintTokens(amount) {
