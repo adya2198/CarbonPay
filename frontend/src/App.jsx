@@ -7,6 +7,7 @@ import { AuthProvider } from "./context/AuthContext";
 import AddTreePage from "./pages/AddTreePage";
 import MyTreesPage from "./pages/MyTreesPage";
 import TransactionsPage from "./pages/TransactionsPage"; // if you already added it
+import TransferPage from "./pages/TransferPage";
 import ProfilePage from "./pages/ProfilePage";
 import NavBar from "./components/NavBar";
 
@@ -39,6 +40,15 @@ export default function App() {
             element={
               <ProtectedRoute>
                 <AddTreePage />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route 
+            path="/transfer" 
+            element={
+              <ProtectedRoute>
+                <TransferPage />
               </ProtectedRoute>
             }
           />

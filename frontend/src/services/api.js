@@ -1,5 +1,41 @@
 // src/services/api.js
 import { auth } from "../firebase";
+const API = "http://localhost:5000/api";
+
+import { getAuth } from "firebase/auth";
+
+
+// Get Firebase ID token (used by all API calls)
+async function getToken() {
+  const auth = getAuth();
+  const user = auth.currentUser;
+  if (!user) throw new Error("Not authenticated");
+  return await user.getIdToken();
+}
+
+/* ======================
+   Example API functions
+   Add other functions you had below.
+   I'm including transferTokens as an example.
+====================== */
+
+export async function transferTokens(receiverEmail, amount) {
+  const token = await getToken();
+
+  const res = await fetch(`${API}/transfer`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({ receiverEmail, amount }),
+  });
+
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.error || "Transfer failed");
+  return data;
+}
+
 import {
   initializeUser,
   getWallet as dbGetWallet,
