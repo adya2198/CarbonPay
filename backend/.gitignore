@@ -20,3 +20,5 @@ lerna-debug.log*
 
 # Optional: build output (if you ever build backend)
 dist/
+
+serviceAccountKey.json

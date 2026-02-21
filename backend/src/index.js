@@ -17,6 +17,9 @@ app.use(express.json());
 
 app.use("/api/auth", authRoutes);
 app.use("/api/wallet", walletRoutes);
+app.get("/api/ping", (req, res) => {
+  res.json({ ok: true, now: new Date().toISOString() });
+});
 app.use("/api/transactions", transactionRoutes);
 app.use("/api", transferRouter);
 
