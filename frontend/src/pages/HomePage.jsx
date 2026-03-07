@@ -102,8 +102,17 @@ export default function HomePage() {
             <p className="hp-sub">Manage your carbon credits, trees, and transactions.</p>
 
             <div className="hp-actions">
-              <button onClick={() => navigate("/add-tree")} className="btn btn-primary">Add Trees & Mint</button>
-              <button onClick={() => navigate("/transactions")} className="btn btn-ghost">View Transactions</button>
+              <button onClick={() => navigate("/add-tree")} className="btn btn-primary">
+                Add Trees & Mint
+              </button>
+
+              <button onClick={() => navigate("/transfer")} className="btn btn-secondary">
+                Transfer Tokens
+              </button>
+
+              <button onClick={() => navigate("/transactions")} className="btn btn-ghost">
+                View Transactions
+              </button>
             </div>
 
             {error && <div style={{ marginTop: 12, color: "#ff8b8b", fontWeight: 600 }}>Error: {error}</div>}

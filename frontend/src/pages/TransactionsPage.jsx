@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from "react";
 import { useAuth } from "../context/AuthContext";
 import { db } from "../firebase";
+import "../styles/transactions.css";
 import {
   collection,
   query,
@@ -15,9 +16,10 @@ import { useNavigate } from "react-router-dom";
 export default function TransactionsPage() {
   const { user } = useAuth();
   const navigate = useNavigate();
+
   const [txns, setTxns] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [filter, setFilter] = useState("ALL"); // ALL | MINT | SPEND
+  const [filter, setFilter] = useState("ALL"); // ALL | MINT | SEND | RECEIVE
 
   useEffect(() => {
     if (!user?.uid) {
@@ -26,7 +28,6 @@ export default function TransactionsPage() {
       return;
     }
 
-    // Real-time query: user's transactions, newest first, limit to 200
     const q = query(
       collection(db, "transactions"),
       where("uid", "==", user.uid),
@@ -40,13 +41,17 @@ export default function TransactionsPage() {
         const list = [];
         snap.forEach((doc) => {
           const data = doc.data();
+
           list.push({
             id: doc.id,
             type: data.type,
             amount: data.amount,
-            timestamp: data.timestamp ? data.timestamp.toMillis() : null,
+            timestamp: data.timestamp
+              ? data.timestamp.toMillis()
+              : null,
           });
         });
+
         setTxns(list);
         setLoading(false);
       },
@@ -59,29 +64,38 @@ export default function TransactionsPage() {
     return () => unsub();
   }, [user]);
 
-  const filtered = txns.filter((t) => (filter === "ALL" ? true : t.type === filter));
+const filtered = txns.filter((t) =>
+  filter === "ALL" ? true : t.type?.toUpperCase() === filter
+);
+
+  const getIcon = (type) => {
+    if (type === "MINT") return "🌱";
+    if (type === "RECEIVE") return "⬇️";
+    if (type === "SEND") return "⬆️";
+    return "🔁";
+  };
 
   return (
-    <main className="min-h-screen p-6 bg-gray-100">
-      <div className="max-w-3xl mx-auto bg-white shadow rounded-xl p-6">
-        <div className="flex items-center justify-between mb-4">
+    <main className="tx-page">
+      <div className="tx-container">
+
+        <div className="tx-header">
           <div>
-            <h2 className="text-xl font-semibold">Transactions</h2>
-            <p className="text-sm text-gray-500">All activity for your account</p>
+            <h2>Transactions</h2>
+            <p>All activity for your account</p>
           </div>
 
-          <div className="flex items-center gap-2">
-            <button
-              onClick={() => navigate("/")}
-              className="py-2 px-3 bg-gray-200 hover:bg-gray-300 rounded text-sm"
-            >
-              Back to Home
-            </button>
-          </div>
+          <button
+            onClick={() => navigate("/")}
+            className="btn-back"
+          >
+            Back to Home
+          </button>
         </div>
 
-        <div className="flex items-center gap-3 mb-4">
-          <label className="text-sm text-gray-600">Filter:</label>
+        <div className="tx-filter">
+          <label>Filter:</label>
+
           <select
             value={filter}
             onChange={(e) => setFilter(e.target.value)}
@@ -89,40 +103,51 @@ export default function TransactionsPage() {
           >
             <option value="ALL">All</option>
             <option value="MINT">Mint</option>
-            <option value="SPEND">Spend</option>
+            <option value="SEND">Send</option>
+            <option value="RECEIVE">Receive</option>
           </select>
 
-          <div className="ml-auto text-sm text-gray-600">
-            Showing <span className="font-medium">{filtered.length}</span> of{" "}
-            <span className="font-medium">{txns.length}</span>
+          <div className="tx-count">
+            Showing <b>{filtered.length}</b> of <b>{txns.length}</b>
           </div>
         </div>
 
         {loading ? (
-          <div className="py-10 text-center text-gray-600">Loading transactions...</div>
+          <div className="tx-loading">Loading transactions...</div>
         ) : filtered.length === 0 ? (
-          <div className="py-10 text-center text-gray-500">No transactions yet.</div>
+          <div className="tx-empty">No transactions yet.</div>
         ) : (
-          <ul className="space-y-3">
+          <ul className="tx-list">
             {filtered.map((t) => (
-              <li
-                key={t.id}
-                className="flex items-center justify-between p-3 bg-gray-50 rounded-md shadow-sm"
-              >
-                <div>
-                  <div className="font-semibold">{t.type}</div>
-                  <div className="text-xs text-gray-500">
-                    {t.timestamp ? new Date(t.timestamp).toLocaleString() : "—"}
+              <li key={t.id} className="tx-item">
+
+                <div className="tx-left">
+                  <div className="tx-icon">
+                    {getIcon(t.type)}
+                  </div>
+
+                  <div>
+                    <div className="tx-type">{t.type}</div>
+                    <div className="tx-time">
+                      {t.timestamp
+                        ? new Date(t.timestamp).toLocaleString()
+                        : "—"}
+                    </div>
                   </div>
                 </div>
 
-                <div className="text-lg font-bold">
-                  {t.type === "MINT" ? (
-                    <span className="text-green-600">+{t.amount}</span>
-                  ) : (
-                    <span className="text-red-600">-{t.amount}</span>
-                  )}
+                <div
+                  className={`tx-amount ${
+                    t.type === "MINT" || t.type === "RECEIVE"
+                      ? "plus"
+                      : "minus"
+                  }`}
+                >
+                  {t.type === "MINT" || t.type === "RECEIVE"
+                    ? `+${t.amount}`
+                    : `-${t.amount}`}
                 </div>
+
               </li>
             ))}
           </ul>
