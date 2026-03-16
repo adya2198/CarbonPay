@@ -110,9 +110,9 @@ export default function HomePage() {
                 Transfer Tokens
               </button>
 
-              <button onClick={() => navigate("/transactions")} className="btn btn-ghost">
+              {/* <button onClick={() => navigate("/transactions")} className="btn btn-ghost">
                 View Transactions
-              </button>
+              </button> */}
             </div>
 
             {error && <div style={{ marginTop: 12, color: "#ff8b8b", fontWeight: 600 }}>Error: {error}</div>}
@@ -163,8 +163,14 @@ export default function HomePage() {
                       <div className="txn-type">{t.type}</div>
                       <div className="txn-time">{t.timestamp ? new Date(t.timestamp).toLocaleString() : ""}</div>
                     </div>
-                    <div className={`txn-amt ${t.type === "MINT" ? "plus" : "minus"}`}>
-                      {t.type === "MINT" ? `+${t.amount}` : `-${t.amount}`}
+                    <div
+                      className={`txn-amt ${
+                        t.type === "MINT" || t.type === "RECEIVE" ? "plus" : "minus"
+                      }`}
+                    >
+                      {t.type === "MINT" || t.type === "RECEIVE"
+                        ? `+${t.amount}`
+                        : `-${t.amount}`}
                     </div>
                   </div>
                 ))

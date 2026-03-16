@@ -140,7 +140,7 @@
 /*  SEED DEMO BUTTON                              */
 /* ---------------------------------------------- */
 
-.seed-btn {
+/* .seed-btn {
   margin-top: -8px;
   margin-bottom: 12px;
   padding: 10px 22px;
@@ -156,7 +156,7 @@
 .seed-btn:hover {
   filter: brightness(1.15);
   transform: translateY(-2px);
-}
+} */
 
 .msg {
   margin-top: 6px;
