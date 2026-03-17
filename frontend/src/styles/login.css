@@ -1,0 +1,172 @@
+/* src/styles/login.css */
+
+.login-root {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #071226, #071827);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #e6eef6;
+}
+
+.login-container {
+  width: 100%;
+  max-width: 1100px;
+  display: flex;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+}
+
+/* LEFT SIDE */
+.login-left {
+  flex: 1;
+  padding: 60px;
+  background: linear-gradient(135deg, #0a1f3a, #071226);
+  position: relative;
+}
+
+.login-left h1 {
+  margin-bottom: 10px;
+}
+
+.login-left h2 {
+  font-size: 32px;
+  margin-bottom: 10px;
+}
+
+.login-gif {
+  width: 140px;
+  height: 140px;
+  margin: 0 auto 10px auto;
+  object-fit: cover;
+  margin-bottom: 10px;
+  border-radius: 10px;
+}
+
+.login-left p {
+  color: #9aa6b2;
+  margin-bottom: 30px;
+}
+
+.eco-stats {
+  display: flex;
+  gap: 30px;
+}
+
+.eco-stats div {
+  text-align: center;
+}
+
+.eco-stats span {
+  font-size: 24px;
+}
+
+.eco-stats strong {
+  display: block;
+  font-size: 18px;
+}
+
+/* shapes */
+.hero-shapes .shape {
+  position: absolute;
+  border-radius: 20px;
+  opacity: 0.1;
+}
+
+.shape1 {
+  width: 120px;
+  height: 120px;
+  border: 10px solid #8b5cf6;
+  top: 50px;
+  left: 40px;
+}
+
+.shape2 {
+  width: 80px;
+  height: 120px;
+  border: 10px solid #22c1c3;
+  bottom: 40px;
+  right: 40px;
+}
+
+/* RIGHT SIDE */
+.login-right {
+  width: 400px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #0b1220;
+}
+
+/* CARD */
+.login-card {
+  width: 100%;
+  padding: 40px;
+  text-align: center;
+}
+
+.login-card h3 {
+  margin-bottom: 5px;
+}
+
+.muted {
+  color: #9aa6b2;
+  margin-bottom: 20px;
+}
+
+/* BUTTONS */
+.btn {
+  width: 100%;
+  padding: 12px;
+  border-radius: 10px;
+  border: none;
+  margin-top: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.google-btn {
+  background: linear-gradient(90deg, #22c1c3, #8b5cf6);
+  color: #04121a;
+}
+
+.demo-btn {
+  background: transparent;
+  border: 1px solid rgba(255,255,255,0.1);
+  color: #9aa6b2;
+}
+
+.btn:hover {
+  transform: translateY(-2px);
+}
+
+/* ERROR */
+.error {
+  color: #ff6b6b;
+  margin-top: 10px;
+}
+
+/* FOOTER */
+.privacy {
+  font-size: 12px;
+  color: #9aa6b2;
+  margin-top: 20px;
+}
+
+/* MOBILE */
+@media (max-width: 900px) {
+  .login-container {
+    flex-direction: column;
+  }
+
+  .login-right {
+    width: 100%;
+  }
+
+  .login-left {
+    padding: 40px;
+    text-align: center;
+  }
+}

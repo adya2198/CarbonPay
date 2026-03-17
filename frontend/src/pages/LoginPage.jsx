@@ -1,45 +1,90 @@
 // src/pages/LoginPage.jsx
-import React from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
+import { signInWithPopup, GoogleAuthProvider } from "firebase/auth";
 import { auth } from "../firebase";
-import { loginWithGoogle } from "../services/api";
+import "../styles/login.css";
 
 export default function LoginPage() {
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
-  async function signIn() {
+  async function handleGoogleLogin() {
+    setLoading(true);
+    setError("");
+
     try {
       const provider = new GoogleAuthProvider();
       await signInWithPopup(auth, provider);
 
-      // initialize user doc in Firestore
-      await loginWithGoogle();
-
-      // navigate after auth state updated
-      navigate("/");
-    } catch (error) {
-      console.error("Google Sign-In failed:", error);
-      alert("Google Sign-In failed. See console for details.");
+      navigate("/"); // go to home
+    } catch (err) {
+      console.error(err);
+      setError("Login failed. Please try again.");
+    } finally {
+      setLoading(false);
     }
   }
 
   return (
-    <main className="min-h-screen flex items-center justify-center bg-gray-50">
-      <div className="p-8 card w-full max-w-md shadow-lg rounded-xl bg-white">
-        <h1 className="text-2xl font-bold mb-6 text-center">Welcome to CarbonPay</h1>
+    <main className="login-root">
+      <div className="login-container">
 
-        <button
-          onClick={signIn}
-          className="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold flex items-center justify-center rounded-xl gap-3 transition"
-        >
-          <img
-            src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg"
-            alt="Google"
-            className="w-5 h-5"
-          />
-          Continue with Google
-        </button>
+        {/* LEFT SIDE */}
+        <div className="login-left">
+          <h1>🌱 CarbonPay</h1>
+          <h2>Turn Trees into Currency</h2>
+
+          <p>
+            Earn tokens by planting trees and contribute to a greener planet.
+          </p>
+
+          <div className="eco-stats">
+            <div>
+              <span>🌳</span>
+              <strong>12,000+</strong>
+              <p>Trees planted</p>
+            </div>
+            <div>
+              <span>🌍</span>
+              <strong>25,000 kg</strong>
+              <p>CO₂ saved</p>
+            </div>
+          </div>
+
+          <div className="hero-shapes">
+            <div className="shape shape1"></div>
+            <div className="shape shape2"></div>
+          </div>
+        </div>
+
+        {/* RIGHT SIDE */}
+        <div className="login-right">
+          <div className="login-card">
+
+            <img
+              src="https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExcDIxZHF5NmhhcTFpNmtrdGpnZWQ3OWFycW42YTY1Y2FveTlwb2JoayZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/LPFNd1AJBoYcVUExmE/giphy.gif"
+              alt="eco animation"
+              className="login-gif"
+            />
+
+            <h3>Welcome Back 👋</h3>
+            <p className="muted">Sign in to continue</p>
+
+            <button
+              className="btn google-btn"
+              onClick={handleGoogleLogin}
+              disabled={loading}
+            >
+              {loading ? "Signing in..." : "Continue with Google"}
+            </button>
+
+            {error && <div className="error">{error}</div>}
+
+          </div>
+        </div>
+
       </div>
     </main>
   );
