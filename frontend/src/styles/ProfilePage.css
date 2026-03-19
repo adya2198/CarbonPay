@@ -136,28 +136,6 @@
   font-size: 14px;
 }
 
-/* ---------------------------------------------- */
-/*  SEED DEMO BUTTON                              */
-/* ---------------------------------------------- */
-
-/* .seed-btn {
-  margin-top: -8px;
-  margin-bottom: 12px;
-  padding: 10px 22px;
-  border-radius: 10px;
-  background: linear-gradient(135deg, #1de5e2, #8a6df1);
-  border: none;
-  font-weight: 600;
-  cursor: pointer;
-  color: #fff;
-  transition: 0.25s;
-}
-
-.seed-btn:hover {
-  filter: brightness(1.15);
-  transform: translateY(-2px);
-} */
-
 .msg {
   margin-top: 6px;
   font-size: 14px;

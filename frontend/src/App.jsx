@@ -6,7 +6,7 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import { AuthProvider } from "./context/AuthContext";
 import AddTreePage from "./pages/AddTreePage";
 import MyTreesPage from "./pages/MyTreesPage";
-import TransactionsPage from "./pages/TransactionsPage"; // if you already added it
+import TransactionsPage from "./pages/TransactionsPage";
 import TransferPage from "./pages/TransferPage";
 import ProfilePage from "./pages/ProfilePage";
 import NavBar from "./components/NavBar";

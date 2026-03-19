@@ -24,55 +24,6 @@ export default function ProfilePage() {
   const [message, setMessage] = useState("");
 
   // --------------------------------------------------
-  // 🔹 Seed Demo Data (DEV PURPOSE ONLY — remove later)
-  // --------------------------------------------------
-  // async function seedDemoData() {
-  //   if (!user || !user.uid) {
-  //     alert("Sign in first.");
-  //     return;
-  //   }
-
-  //   try {
-  //     setMessage("Adding demo data...");
-
-  //     // 1) write/overwrite wallet
-  //     await setDoc(
-  //       doc(db, "users", user.uid),
-  //       {
-  //         email: user.email,
-  //         balance: 150,
-  //         createdAt: serverTimestamp(),
-  //       },
-  //       { merge: true }
-  //     );
-
-  //     // 2) add tree
-  //     await addDoc(collection(db, "trees"), {
-  //       uid: user.uid,
-  //       count: 3,
-  //       type: "native",
-  //       location: "Demo Forest",
-  //       mintedTokens: 30,
-  //       createdAt: serverTimestamp(),
-  //     });
-
-  //     // 3) add transaction
-  //     await addDoc(collection(db, "transactions"), {
-  //       uid: user.uid,
-  //       type: "MINT",
-  //       amount: 30,
-  //       timestamp: serverTimestamp(),
-  //     });
-
-  //     setMessage("Demo data added! Reload page.");
-  //     alert("Demo data written — reload profile page to see changes.");
-  //   } catch (err) {
-  //     console.error(err);
-  //     alert("Seed failed: " + err.message);
-  //   }
-  // }
-
-  // --------------------------------------------------
   // 🔹 Load Wallet + Trees + Transactions
   // --------------------------------------------------
   useEffect(() => {
@@ -163,9 +114,6 @@ export default function ProfilePage() {
           </div>
         </section>
 
-        {/* <button onClick={seedDemoData} className="seed-btn">
-          Seed Demo Data
-        </button> */}
         {message && <p className="msg">{message}</p>}
 
         {/* Recent Transactions */}
