@@ -13,7 +13,6 @@ The current version focuses on clarity of system design and end-to-end flow vali
 This is an open-source learning and research project intended to explore new models of carbon markets, consumer participation in climate finance, and carbon-backed digital currencies.
 
 ---
-
 ## Features
 
 - User registration and authentication
