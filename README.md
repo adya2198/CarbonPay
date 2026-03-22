@@ -59,12 +59,41 @@ Blockchain:
 ## Project Structure
 
 carbonpay/
-├── backend/
 ├── frontend/
+│   ├── src/
+│   │   ├── components/
+│   │   ├── pages/
+│   │   ├── context/
+│   │   ├── services/       # API calls
+│   │   ├── utils/
+│   │   ├── styles/
+│   │   └── App.jsx
+│   └── package.json
+│
+├── backend/
+│   ├── src/
+│   │   ├── controllers/    # handles req/res
+│   │   ├── services/       # business logic
+│   │   ├── repositories/   # DB queries
+│   │   ├── routes/
+│   │   ├── middlewares/
+│   │   ├── utils/
+│   │   ├── config/
+│   │   └── index.js
+│   └── package.json
+│
+├── database/
+│   ├── schema.prisma       # DB schema
+│   └── migrations/
+│
 ├── docs/
+│   ├── api.md
+│   ├── architecture.md
+│   └── flow.md
+│
+├── .env
 ├── README.md
 └── LICENSE
-
 ---
 
 ## Disclaimer
