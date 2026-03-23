@@ -15,8 +15,8 @@ To install CarbonPay, follow these steps:
 3. Install dependencies: `npm install`
 
 ## Usage
-1. Start the server: `npm start`
-2. Open your browser and go to `http://localhost:3000`
+1. Start the server: `npm run dev`
+2. Open your browser and go to `http://localhost:5173`
 
 ## Current Information
 - **Current Date and Time (UTC)**: 2026-03-22 14:10:46
