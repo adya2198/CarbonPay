@@ -2,6 +2,7 @@ import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
 import transferRouter from "./routes/transfer.js";
+import treesRouter from "./routes/trees.js";
 
 dotenv.config();
 
@@ -14,7 +15,7 @@ const PORT = process.env.PORT || 5000;
 
 app.use(cors());
 app.use(express.json());
-
+app.use("/api/trees", treesRouter);
 app.use("/api/auth", authRoutes);
 app.use("/api/wallet", walletRoutes);
 app.get("/api/ping", (req, res) => {

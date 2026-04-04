@@ -88,15 +88,40 @@ export async function getTransactions() {
 }
 
 /** NEW: submit a tree and auto-mint */
-export async function submitTree(tree) {
-  const id = uid();
-  if (!id) throw new Error("Not authenticated");
-  return await dbSubmitTree(id, tree);
+
+export async function submitTree(payload) {
+  const auth = getAuth();
+  const user = auth.currentUser;
+  if (!user) throw new Error("Not authenticated");
+
+  const idToken = await user.getIdToken();
+
+  const res = await fetch(`${API}/trees`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${idToken}`,
+    },
+    body: JSON.stringify(payload),
+  });
+
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.error || "Tree submit failed");
+  return data;
 }
 
 /** NEW: get user's trees */
 export async function getUserTrees() {
-  const id = uid();
-  if (!id) throw new Error("Not authenticated");
-  return await dbGetUserTrees(id);
+  const token = await getToken();
+
+  const res = await fetch(`${API}/trees`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.error || "Failed to fetch trees");
+
+  return data;
 }
