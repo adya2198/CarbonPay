@@ -3,20 +3,20 @@ import cors from "cors";
 import dotenv from "dotenv";
 import transferRouter from "./routes/transfer.js";
 import treesRouter from "./routes/trees.js";
-
 dotenv.config();
 
 import authRoutes from "./routes/auth.routes.js";
 import walletRoutes from "./routes/wallet.routes.js";
 import transactionRoutes from "./routes/transaction.routes.js";
+import treeReviewRouter from "./routes/treeReview.js";
 
 const app = express();
 const PORT = process.env.PORT || 5000;
-
 app.use(cors());
 app.use(express.json());
 app.use("/api/trees", treesRouter);
 app.use("/api/auth", authRoutes);
+app.use("/api/admin/trees", treeReviewRouter);
 app.use("/api/wallet", walletRoutes);
 app.get("/api/ping", (req, res) => {
   res.json({ ok: true, now: new Date().toISOString() });

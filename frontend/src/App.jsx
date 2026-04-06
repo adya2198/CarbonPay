@@ -10,6 +10,7 @@ import TransactionsPage from "./pages/TransactionsPage";
 import TransferPage from "./pages/TransferPage";
 import ProfilePage from "./pages/ProfilePage";
 import NavBar from "./components/NavBar";
+import AdminTreesPage from "./pages/AdminTreesPage";
 
 export default function App() {
   return (
@@ -43,6 +44,12 @@ export default function App() {
               </ProtectedRoute>
             }
           />
+          <Route 
+            path="/admin" 
+            element={
+              <AdminTreesPage />
+              } 
+              />
 
           <Route 
             path="/transfer" 
