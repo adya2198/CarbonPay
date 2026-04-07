@@ -103,6 +103,15 @@ async function isAdmin(decoded) {
 // GET all pending trees
 router.get("/pending", async (req, res) => {
   try {
+    const authHeader = req.headers.authorization || "";
+    const idToken = authHeader.split(" ")[1];
+
+    const decoded = await admin.auth().verifyIdToken(idToken);
+
+    if (!(await isAdmin(decoded))) {
+      return res.status(403).json({ error: "Not admin" });
+    }
+
     const db = admin.firestore();
 
     const snap = await db
