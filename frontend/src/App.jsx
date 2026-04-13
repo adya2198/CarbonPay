@@ -44,12 +44,14 @@ export default function App() {
               </ProtectedRoute>
             }
           />
-          <Route 
-            path="/admin" 
+          <Route
+            path="/admin"
             element={
-              <AdminTreesPage />
-              } 
-              />
+              <ProtectedRoute>
+                <AdminTreesPage />
+              </ProtectedRoute>
+            }
+          />
 
           <Route 
             path="/transfer" 

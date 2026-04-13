@@ -6,6 +6,7 @@ const API = "http://localhost:5000/api";
 export default function AdminTreesPage() {
   const [trees, setTrees] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     loadTrees();
@@ -13,21 +14,29 @@ export default function AdminTreesPage() {
 
   async function getToken() {
     const user = getAuth().currentUser;
+    if (!user) throw new Error("Not authenticated");
     return await user.getIdToken();
   }
 
   async function loadTrees() {
     try {
+      setError(null);
       const token = await getToken();
 
       const res = await fetch(`${API}/admin/trees/pending`, {
         headers: { Authorization: `Bearer ${token}` },
       });
 
+      if (!res.ok) {
+        throw new Error(`Failed: ${res.status}`);
+      }
+
       const data = await res.json();
       setTrees(data);
     } catch (err) {
-      console.error(err);
+      console.error("Load trees error:", err);
+      setError(err.message || "Failed to load trees");
+      setTrees([]);
     } finally {
       setLoading(false);
     }
@@ -58,6 +67,12 @@ export default function AdminTreesPage() {
   return (
     <div style={{ padding: 30 }}>
       <h2>Admin Tree Approval</h2>
+
+      {error && (
+        <div style={{ color: "#ff6b6b", marginBottom: 15, padding: 10, border: "1px solid #ff6b6b", borderRadius: 4 }}>
+          Error: {error}
+        </div>
+      )}
 
       {trees.length === 0 ? (
         <p>No pending requests</p>

@@ -3,6 +3,9 @@ import { firebaseAdmin as admin } from "../firebaseAdmin.js";
 
 const router = express.Router();
 
+// Admin email from environment variable with fallback
+const ADMIN_EMAIL = process.env.ADMIN_EMAIL || "ranjanadya2198@gmail.com";
+
 async function requireAdmin(req) {
   const authHeader = req.headers.authorization || "";
   if (!authHeader.startsWith("Bearer ")) {
@@ -12,10 +15,18 @@ async function requireAdmin(req) {
   const idToken = authHeader.split(" ")[1];
   const decoded = await admin.auth().verifyIdToken(idToken);
 
-  if (!decoded.admin) {
+  console.log("[Admin Auth Debug]");
+  console.log("  Decoded email:", decoded.email);
+  console.log("  Expected email:", ADMIN_EMAIL);
+  console.log("  User UID:", decoded.uid);
+  console.log("  Email match:", decoded.email === ADMIN_EMAIL);
+
+  if (decoded.email !== ADMIN_EMAIL) {
+    console.log("  ❌ Email mismatch - access denied");
     throw new Error("Forbidden");
   }
 
+  console.log("  ✅ Admin verified");
   return decoded;
 }
 
@@ -95,109 +106,32 @@ router.post("/:treeId/review", async (req, res) => {
   }
 });
 
-async function isAdmin(decoded) {
-  const ADMIN_EMAIL = "ranjanadya2198@gmail.com";
-  return decoded.email === ADMIN_EMAIL;
-}
-
 // GET all pending trees
 router.get("/pending", async (req, res) => {
   try {
-    const authHeader = req.headers.authorization || "";
-    const idToken = authHeader.split(" ")[1];
-
-    const decoded = await admin.auth().verifyIdToken(idToken);
-
-    if (!(await isAdmin(decoded))) {
-      return res.status(403).json({ error: "Not admin" });
-    }
+    console.log("\n[GET /pending] Request received");
+    const adminUser = await requireAdmin(req);
 
     const db = admin.firestore();
 
+    console.log("[GET /pending] Querying pending trees...");
     const snap = await db
       .collection("trees")
       .where("status", "==", "pending")
       .get();
+
+    console.log("[GET /pending] Found", snap.size, "pending trees");
 
     const list = snap.docs.map((d) => ({
       id: d.id,
       ...d.data(),
     }));
 
+    console.log("[GET /pending] Returning:", list.length, "trees");
     res.json(list);
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: "Failed to fetch pending trees" });
-  }
-});
-
-// APPROVE / REJECT
-router.post("/:treeId/review", async (req, res) => {
-  try {
-    const authHeader = req.headers.authorization || "";
-    const idToken = authHeader.split(" ")[1];
-
-    const decoded = await admin.auth().verifyIdToken(idToken);
-
-    if (!(await isAdmin(decoded))) {
-      return res.status(403).json({ error: "Not admin" });
-    }
-
-    const { action } = req.body; // approve | reject
-    const { treeId } = req.params;
-
-    const db = admin.firestore();
-    const treeRef = db.collection("trees").doc(treeId);
-
-    await db.runTransaction(async (tx) => {
-      const snap = await tx.get(treeRef);
-      if (!snap.exists) throw new Error("Tree not found");
-
-      const tree = snap.data();
-
-      if (tree.status !== "pending") {
-        throw new Error("Already reviewed");
-      }
-
-      const now = admin.firestore.FieldValue.serverTimestamp();
-
-      if (action === "reject") {
-        tx.update(treeRef, { status: "rejected", verifiedAt: now });
-        return;
-      }
-
-      // ✅ APPROVE
-      const amount = 10;
-
-      const userRef = db.collection("users").doc(tree.uid);
-      const userSnap = await tx.get(userRef);
-
-      const balance = userSnap.data().balance || 0;
-
-      tx.update(treeRef, {
-        status: "approved",
-        minted: true,
-        mintedAmount: amount,
-        verifiedAt: now,
-      });
-
-      tx.update(userRef, {
-        balance: balance + amount,
-      });
-
-      tx.set(db.collection("transactions").doc(), {
-        uid: tree.uid,
-        type: "MINT",
-        amount,
-        treeId,
-        timestamp: now,
-      });
-    });
-
-    res.json({ ok: true });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: err.message });
+    console.error("[GET /pending] Error:", err.message);
+    res.status(500).json({ error: err.message || "Failed to fetch pending trees" });
   }
 });
 

@@ -9,6 +9,36 @@ function makeFingerprint({ uid, treeName, location, plantingDate }) {
   return crypto.createHash("sha256").update(raw).digest("hex");
 }
 
+// GET user's own trees
+router.get("/", async (req, res) => {
+  try {
+    const authHeader = req.headers.authorization || "";
+    if (!authHeader.startsWith("Bearer ")) {
+      return res.status(401).json({ error: "No token provided" });
+    }
+
+    const idToken = authHeader.split(" ")[1];
+    const decoded = await admin.auth().verifyIdToken(idToken);
+
+    const db = admin.firestore();
+    const snap = await db
+      .collection("trees")
+      .where("uid", "==", decoded.uid)
+      .get();
+
+    const list = snap.docs.map((d) => ({
+      id: d.id,
+      ...d.data(),
+    }));
+
+    return res.json(list);
+  } catch (err) {
+    console.error("Get trees error:", err);
+    return res.status(500).json({ error: err.message || "Failed to fetch trees" });
+  }
+});
+
+// POST submit a new tree
 router.post("/", async (req, res) => {
   try {
     const authHeader = req.headers.authorization || "";
