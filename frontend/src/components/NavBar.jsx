@@ -4,7 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 
 export default function NavBar() {
-  const { user, logout } = useAuth();
+  const { user, isAdmin, logout } = useAuth();
   const navigate = useNavigate();
 
   async function handleLogout() {
@@ -31,6 +31,7 @@ export default function NavBar() {
             <Link to="/transactions">Transactions</Link>
             <Link to="/my-trees">My Trees</Link>
             <Link to="/add-tree">Add Tree</Link>
+            {isAdmin && <Link to="/admin">Admin</Link>}
           </nav>
         </div>
 

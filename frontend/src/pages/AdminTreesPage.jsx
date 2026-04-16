@@ -87,6 +87,11 @@ export default function AdminTreesPage() {
               borderRadius: 8,
             }}
           >
+            <div style={{ marginBottom: 10, paddingBottom: 10, borderBottom: "1px solid #eee" }}>
+              <div><b>Submitted by:</b> {t.userName || "Unknown"}</div>
+              <div style={{ fontSize: 12, color: "#666" }}>Email: {t.userEmail || "N/A"}</div>
+            </div>
+
             <div><b>{t.treeName}</b></div>
             <div>{t.location}</div>
             <div>{t.plantingDate}</div>

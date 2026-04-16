@@ -76,6 +76,8 @@ router.post("/", async (req, res) => {
 
     const treeDoc = {
       uid: decoded.uid,
+      userName: decoded.name || decoded.email || "Unknown User",
+      userEmail: decoded.email,
       treeName,
       location,
       plantingDate,

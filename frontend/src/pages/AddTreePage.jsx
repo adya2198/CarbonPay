@@ -72,59 +72,56 @@ export default function AddTreePage() {
   return (
     <>
       <NavBar />
-      <main className="page-root" style={{ padding: 28 }}>
-        <div className="card" style={{ maxWidth: 680 }}>
-          <h2>Add Tree</h2>
-          <p className="muted">
-            Submit your tree for verification. Tokens will be minted only after approval.
+      <main className="page-root">
+        <div className="card" style={{ maxWidth: 600 }}>
+          <h2 style={{ margin: "0 0 8px 0", fontSize: "24px" }}>🌱 Add Tree</h2>
+          <p className="muted" style={{ marginBottom: 24 }}>
+            Submit your tree for verification. Tokens will be minted only after admin approval.
           </p>
 
-          <form onSubmit={handleSubmit} style={{ marginTop: 18 }}>
-            <label>Tree Name</label>
+          <form onSubmit={handleSubmit}>
+            <label>Tree Name *</label>
             <input
               value={treeName}
               onChange={(e) => setTreeName(e.target.value)}
               placeholder="e.g. Mango Tree"
+              required
             />
 
-            <label>Location</label>
+            <label>Location *</label>
             <input
               value={location}
               onChange={(e) => setLocation(e.target.value)}
               placeholder="e.g. Rourkela, Odisha"
+              required
             />
 
-            <label>Planting Date</label>
+            <label>Planting Date *</label>
             <input
               type="date"
               value={plantingDate}
               onChange={(e) => setPlantingDate(e.target.value)}
+              required
             />
 
-            <div style={{ marginTop: 12 }}>
-              <button disabled={loading} type="submit">
+            {msg && (
+              <div className={`msg-${msg.type}`}>
+                {msg.text}
+              </div>
+            )}
+
+            <div style={{ display: "flex", gap: 10 }}>
+              <button disabled={loading} type="submit" style={{ flex: 1 }}>
                 {loading ? "Submitting..." : "Submit for Verification"}
               </button>
-
               <button
                 onClick={() => navigate("/")}
                 type="button"
-                style={{ marginLeft: 10 }}
+                style={{ flex: 1 }}
               >
                 Cancel
               </button>
             </div>
-
-            {msg && (
-              <div
-                style={{
-                  marginTop: 12,
-                  color: msg.type === "error" ? "#ff6b6b" : "#6ee7b7",
-                }}
-              >
-                {msg.text}
-              </div>
-            )}
           </form>
         </div>
       </main>
