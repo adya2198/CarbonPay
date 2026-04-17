@@ -4,6 +4,7 @@ import NavBar from "../components/NavBar";
 import { useAuth } from "../context/AuthContext";
 import { getWallet as apiGetWallet, getTransactions as apiGetTransactions, getUserTrees as apiGetUserTrees } from "../services/api";
 import { useNavigate } from "react-router-dom";
+import "../styles/home.css";
 
 export default function HomePage() {
   const { user } = useAuth();
@@ -95,91 +96,115 @@ export default function HomePage() {
   return (
     <>
       <NavBar />
-      <main className="hp-root">
-        <section className="hp-hero">
-          <div>
-            <h1 className="hp-hi">Welcome back, {user?.name || user?.email}</h1>
-            <p className="hp-sub">Manage your carbon credits, trees, and transactions.</p>
+      <main className="home-root">
+        <section className="home-hero">
+          <div className="hero-content">
+            <h1 className="hero-title">Welcome back, {user?.name || user?.email}</h1>
+            <p className="hero-subtitle">Manage your carbon credits and track your environmental impact.</p>
 
-            <div className="hp-actions">
-              <button onClick={() => navigate("/add-tree")} className="btn btn-primary">
-                Add Trees & Mint
+            <div className="hero-actions">
+              <button onClick={() => navigate("/add-tree")} className="btn-action btn-primary">
+                🌱 Plant Tree & Mint
               </button>
 
-              <button onClick={() => navigate("/transfer")} className="btn btn-secondary">
-                Transfer Tokens
+              <button onClick={() => navigate("/transfer")} className="btn-action btn-secondary">
+                ↔️ Transfer Tokens
               </button>
 
-              {/* <button onClick={() => navigate("/transactions")} className="btn btn-ghost">
-                View Transactions
-              </button> */}
+              <button onClick={() => navigate("/my-trees")} className="btn-action btn-ghost">
+                📋 My Trees
+              </button>
             </div>
 
-            {error && <div style={{ marginTop: 12, color: "#ff8b8b", fontWeight: 600 }}>Error: {error}</div>}
+            {error && <div className="error-banner">⚠️ Error: {error}</div>}
           </div>
 
-          <div className="hp-hero-visual" aria-hidden>
+          <div className="hero-visual" aria-hidden>
             <div className="hero-shape hero-shape-1" />
             <div className="hero-shape hero-shape-2" />
           </div>
         </section>
 
-        <section className="hp-grid">
-          <article className="card">
-            <div className="card-head">Wallet Balance</div>
-            <div className="card-body">
-              <div className="card-value">
-                {loading ? "..." : `${(typeof balance === "number" ? balance : Number(balance) || 0)} Tokens`}
+        <section className="home-stats">
+          <article className="stat-card balance-card">
+            <div className="stat-icon">💰</div>
+            <div className="stat-content">
+              <p className="stat-label">Wallet Balance</p>
+              <div className="stat-value">
+                {loading ? <span className="skeleton">...</span> : `${(typeof balance === "number" ? balance : Number(balance) || 0)} Tokens`}
               </div>
-              <div className="card-note">Your available carbon credits</div>
+              <p className="stat-note">Your available carbon credits</p>
             </div>
-            <div className="card-foot">
-              <button onClick={() => navigate("/add-tree")} className="mini">Mint</button>
-            </div>
+            <button onClick={() => navigate("/add-tree")} className="stat-action">Mint More</button>
           </article>
 
-          <article className="card">
-            <div className="card-head">Trees Registered</div>
-            <div className="card-body">
-              <div className="card-value">{loading ? "..." : (Array.isArray(trees) ? trees.length : 0)}</div>
-              <div className="card-note">Total trees you've added</div>
+          <article className="stat-card trees-card">
+            <div className="stat-icon">🌲</div>
+            <div className="stat-content">
+              <p className="stat-label">Trees Registered</p>
+              <div className="stat-value">
+                {loading ? <span className="skeleton">...</span> : (Array.isArray(trees) ? trees.length : 0)}
+              </div>
+              <p className="stat-note">Total trees you've added</p>
             </div>
-            <div className="card-foot">
-              <button onClick={() => navigate("/my-trees")} className="mini">My Trees</button>
-            </div>
+            <button onClick={() => navigate("/my-trees")} className="stat-action">View All</button>
           </article>
 
-          <article className="card wide">
-            <div className="card-head">Recent Transactions</div>
-            <div className="card-list">
-              {loading ? (
-                <div className="muted">Loading...</div>
-              ) : txns.length === 0 ? (
-                <div className="muted">No transactions yet</div>
-              ) : (
-                txns.slice(0, 6).map((t) => (
-                  <div key={t.id} className="txn-row">
-                    <div className="txn-left">
-                      <div className="txn-type">{t.type}</div>
-                      <div className="txn-time">{t.timestamp ? new Date(t.timestamp).toLocaleString() : ""}</div>
+          <article className="stat-card activity-card">
+            <div className="stat-icon">📊</div>
+            <div className="stat-content">
+              <p className="stat-label">Recent Activity</p>
+              <div className="stat-value">
+                {loading ? <span className="skeleton">...</span> : (Array.isArray(txns) ? txns.length : 0)}
+              </div>
+              <p className="stat-note">Total transactions</p>
+            </div>
+            <button onClick={() => navigate("/transactions")} className="stat-action">See All</button>
+          </article>
+        </section>
+
+        <section className="home-transactions">
+          <div className="transactions-header">
+            <div>
+              <h2 className="transactions-title">💳 Recent Activity</h2>
+              <p className="transactions-subtitle">Your latest transactions</p>
+            </div>
+            <button onClick={() => navigate("/transactions")} className="btn-view-all">View All →</button>
+          </div>
+
+          {loading ? (
+            <div className="tx-loading">
+              <div className="spinner"></div>
+              <p>Loading transactions...</p>
+            </div>
+          ) : txns.length === 0 ? (
+            <div className="tx-empty">
+              <div className="empty-icon">📭</div>
+              <p>No transactions yet. Start by minting your first tree!</p>
+            </div>
+          ) : (
+            <div className="transactions-list">
+              {txns.slice(0, 5).map((t) => (
+                <div key={t.id} className="transaction-item">
+                  <div className="tx-left">
+                    <div className="tx-icon">
+                      {t.type === "MINT" && "🌱"}
+                      {t.type === "RECEIVE" && "⬇️"}
+                      {t.type === "SEND" && "⬆️"}
+                      {!["MINT", "RECEIVE", "SEND"].includes(t.type) && "🔁"}
                     </div>
-                    <div
-                      className={`txn-amt ${
-                        t.type === "MINT" || t.type === "RECEIVE" ? "plus" : "minus"
-                      }`}
-                    >
-                      {t.type === "MINT" || t.type === "RECEIVE"
-                        ? `+${t.amount}`
-                        : `-${t.amount}`}
+                    <div>
+                      <div className="tx-label">{t.type}</div>
+                      <div className="tx-time">{t.timestamp ? new Date(t.timestamp).toLocaleString() : ""}</div>
                     </div>
                   </div>
-                ))
-              )}
+                  <div className={`tx-amount ${t.type === "MINT" || t.type === "RECEIVE" ? "plus" : "minus"}`}>
+                    {t.type === "MINT" || t.type === "RECEIVE" ? `+${t.amount}` : `-${t.amount}`}
+                  </div>
+                </div>
+              ))}
             </div>
-            <div className="card-foot">
-              <button onClick={() => navigate("/transactions")} className="mini">See all</button>
-            </div>
-          </article>
+          )}
         </section>
       </main>
     </>

@@ -4,6 +4,7 @@ import { useAuth } from "../context/AuthContext";
 import { getUserTrees } from "../services/api";
 import { useNavigate } from "react-router-dom";
 import NavBar from "../components/NavBar";
+import "../styles/myTrees.css";
 
 export default function MyTreesPage() {
   const { user } = useAuth();
@@ -30,96 +31,123 @@ export default function MyTreesPage() {
 
   function getStatusLabel(status) {
     const s = (status || "").toLowerCase();
-    if (s === "pending") return "Pending Verification";
-    if (s === "approved") return "Approved";
-    if (s === "rejected") return "Rejected";
-    return "Unknown";
+    if (s === "pending") return "⏳ Pending";
+    if (s === "approved") return "✓ Approved";
+    if (s === "rejected") return "✗ Rejected";
+    return "?";
   }
 
   function getStatusClass(status) {
     const s = (status || "").toLowerCase();
-    if (s === "pending") return "pending";
-    if (s === "approved") return "approved";
-    if (s === "rejected") return "rejected";
+    if (s === "pending") return "status-pending";
+    if (s === "approved") return "status-approved";
+    if (s === "rejected") return "status-rejected";
     return "";
   }
+
 
   return (
     <>
       <NavBar />
-      <main className="page-root" style={{ padding: 28 }}>
-        <div className="card" style={{ maxWidth: 900 }}>
-          <div className="flex items-center justify-between mb-4">
-            <div>
-              <h2 className="text-2xl font-semibold">My Trees</h2>
-              <p className="muted">Track your submitted trees and their verification status.</p>
-            </div>
+      <main className="page-root mt-trees">
+        <div className="trees-header">
+          <div>
+            <h1 className="trees-title">🌳 My Trees</h1>
+            <p className="trees-subtitle">Manage and track all your submitted trees</p>
+          </div>
+          <button
+            onClick={() => navigate("/add-tree")}
+            className="btn-add-tree"
+          >
+            + Plant Tree
+          </button>
+        </div>
 
+        {loading ? (
+          <div className="trees-loading">
+            <div className="spinner"></div>
+            <p>Loading your trees...</p>
+          </div>
+        ) : trees.length === 0 ? (
+          <div className="trees-empty">
+            <div className="empty-icon">🌱</div>
+            <h3>No Trees Yet</h3>
+            <p>Start planting! Submit your first tree and earn carbon credits.</p>
             <button
               onClick={() => navigate("/add-tree")}
-              className="py-2 px-3 bg-green-600 text-white rounded"
+              className="btn-primary"
             >
-              Add Tree
+              Plant Your First Tree
             </button>
           </div>
-
-          {loading ? (
-            <p>Loading...</p>
-          ) : trees.length === 0 ? (
-            <p className="text-gray-500">You haven't submitted any trees yet.</p>
-          ) : (
-            <ul className="space-y-3">
-              {trees.map((t) => (
-                <li
-                  key={t.id}
-                  className="flex items-center gap-4 p-3 bg-gray-50 rounded"
-                >
-                  <div className="flex-1">
-                    <div className="font-semibold">
-                      {t.treeName || "Untitled Tree"}
-                    </div>
-
-                    <div className="text-sm text-gray-500">
-                      {t.location || "No location"} • {t.plantingDate || "No date"}
-                    </div>
-
-                    <div className="text-sm text-gray-500">
-                      Status:{" "}
-                      <span className={`tree-status ${getStatusClass(t.status)}`}>
-                        {getStatusLabel(t.status)}
-                      </span>
-                    </div>
-
-                    <div className="text-sm text-gray-500">
-                      Minted: {t.minted ? "Yes" : "No"}
-                      {typeof t.mintedAmount === "number" ? ` • ${t.mintedAmount} tokens` : ""}
-                    </div>
-
-                    <div className="text-sm text-gray-400">
-                      {t.createdAt || t.timestamp
-                        ? new Date(t.createdAt || t.timestamp).toLocaleString()
-                        : ""}
-                    </div>
-
-                    {t.rejectionReason ? (
-                      <div className="text-sm text-red-400 mt-1">
-                        Reason: {t.rejectionReason}
-                      </div>
-                    ) : null}
-                  </div>
-
-                  {t.imageURL ? (
+        ) : (
+          <div className="trees-grid">
+            {trees.map((t) => (
+              <div key={t.id} className="tree-card">
+                {t.imageURL && (
+                  <div className="tree-image-wrapper">
                     <img
                       src={t.imageURL}
-                      alt="tree"
-                      className="w-20 h-20 object-cover rounded"
+                      alt={t.treeName || "tree"}
+                      className="tree-image"
                     />
+                  </div>
+                )}
+
+                <div className="tree-card-content">
+                  <div className="tree-header-row">
+                    <h3 className="tree-name">{t.treeName || "Untitled Tree"}</h3>
+                    <span className={`tree-status ${getStatusClass(t.status)}`}>
+                      {getStatusLabel(t.status)}
+                    </span>
+                  </div>
+
+                  <div className="tree-meta">
+                    <div className="meta-item">
+                      <span className="meta-label">📍 Location</span>
+                      <span className="meta-value">{t.location || "Not specified"}</span>
+                    </div>
+                    <div className="meta-item">
+                      <span className="meta-label">📅 Planted</span>
+                      <span className="meta-value">{t.plantingDate || "Not specified"}</span>
+                    </div>
+                  </div>
+
+                  {t.minted && (
+                    <div className="tree-tokens">
+                      <span className="token-icon">⚡</span>
+                      <span className="token-value">
+                        {typeof t.mintedAmount === "number"
+                          ? `${t.mintedAmount} tokens minted`
+                          : "Minted"}
+                      </span>
+                    </div>
+                  )}
+
+                  {t.rejectionReason && (
+                    <div className="tree-rejection">
+                      <span className="rejection-label">Rejection Reason:</span>
+                      <p>{t.rejectionReason}</p>
+                    </div>
+                  )}
+
+                  {t.createdAt || t.timestamp ? (
+                    <div className="tree-date">
+                      {new Date(t.createdAt || t.timestamp).toLocaleDateString()}
+                    </div>
                   ) : null}
-                </li>
-              ))}
-            </ul>
-          )}
-        </div>
+
+                  <div className="tree-actions">
+                    <button className="action-btn view-btn">View Details</button>
+                    {t.status?.toLowerCase() === "rejected" && (
+                      <button className="action-btn resubmit-btn">Resubmit</button>
+                    )}
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
       </main>
     </>
   );

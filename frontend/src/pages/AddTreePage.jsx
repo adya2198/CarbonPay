@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { submitTree } from "../services/api";
 import NavBar from "../components/NavBar";
+import "../styles/addTree.css";
 
 export default function AddTreePage() {
   const navigate = useNavigate();
@@ -72,54 +73,115 @@ export default function AddTreePage() {
   return (
     <>
       <NavBar />
-      <main className="page-root">
-        <div className="card" style={{ maxWidth: 600 }}>
-          <h2 style={{ margin: "0 0 8px 0", fontSize: "24px" }}>🌱 Add Tree</h2>
-          <p className="muted" style={{ marginBottom: 24 }}>
-            Submit your tree for verification. Tokens will be minted only after admin approval.
-          </p>
+      <main className="add-tree-root">
+        <div className="add-tree-container">
+          <div className="add-tree-header">
+            <div>
+              <h1 className="add-tree-title">🌱 Plant a Tree</h1>
+              <p className="add-tree-subtitle">Submit your tree for verification and earn carbon credits</p>
+            </div>
+          </div>
 
-          <form onSubmit={handleSubmit}>
-            <label>Tree Name *</label>
-            <input
-              value={treeName}
-              onChange={(e) => setTreeName(e.target.value)}
-              placeholder="e.g. Mango Tree"
-              required
-            />
+          <div className="add-tree-info-box">
+            <div className="info-item">
+              <span className="info-icon">✓</span>
+              <div>
+                <p className="info-title">Easy Process</p>
+                <p className="info-text">Fill in the tree details and submit</p>
+              </div>
+            </div>
+            <div className="info-item">
+              <span className="info-icon">⏳</span>
+              <div>
+                <p className="info-title">Pending Verification</p>
+                <p className="info-text">Admin will review your submission</p>
+              </div>
+            </div>
+            <div className="info-item">
+              <span className="info-icon">🎁</span>
+              <div>
+                <p className="info-title">Earn Tokens</p>
+                <p className="info-text">Get minted upon approval</p>
+              </div>
+            </div>
+          </div>
 
-            <label>Location *</label>
-            <input
-              value={location}
-              onChange={(e) => setLocation(e.target.value)}
-              placeholder="e.g. Rourkela, Odisha"
-              required
-            />
+          <form onSubmit={handleSubmit} className="add-tree-form">
+            <div className="form-group">
+              <label htmlFor="treeName" className="form-label">
+                🌳 Tree Name <span className="required">*</span>
+              </label>
+              <input
+                id="treeName"
+                type="text"
+                value={treeName}
+                onChange={(e) => setTreeName(e.target.value)}
+                placeholder="e.g. Mango Tree, Oak, Pine"
+                className="form-input"
+                required
+              />
+              <p className="form-hint">The type or common name of the tree</p>
+            </div>
 
-            <label>Planting Date *</label>
-            <input
-              type="date"
-              value={plantingDate}
-              onChange={(e) => setPlantingDate(e.target.value)}
-              required
-            />
+            <div className="form-group">
+              <label htmlFor="location" className="form-label">
+                📍 Location <span className="required">*</span>
+              </label>
+              <input
+                id="location"
+                type="text"
+                value={location}
+                onChange={(e) => setLocation(e.target.value)}
+                placeholder="e.g. Rourkela, Odisha" 
+                className="form-input"
+                required
+              />
+              <p className="form-hint">City/Town where the tree is planted</p>
+            </div>
+
+            <div className="form-group">
+              <label htmlFor="plantingDate" className="form-label">
+                📅 Planting Date <span className="required">*</span>
+              </label>
+              <input
+                id="plantingDate"
+                type="date"
+                value={plantingDate}
+                onChange={(e) => setPlantingDate(e.target.value)}
+                className="form-input"
+                required
+              />
+              <p className="form-hint">When was this tree planted</p>
+            </div>
 
             {msg && (
-              <div className={`msg-${msg.type}`}>
-                {msg.text}
+              <div className={`form-message msg-${msg.type}`}>
+                <span className="msg-icon">{msg.type === "success" ? "✓" : "⚠"}</span>
+                <span className="msg-text">{msg.text}</span>
               </div>
             )}
 
-            <div style={{ display: "flex", gap: 10 }}>
-              <button disabled={loading} type="submit" style={{ flex: 1 }}>
-                {loading ? "Submitting..." : "Submit for Verification"}
+            <div className="form-actions">
+              <button
+                disabled={loading}
+                type="submit"
+                className="btn-submit"
+              >
+                {loading ? (
+                  <>
+                    <span className="spinner-small"></span>
+                    Submitting...
+                  </>
+                ) : (
+                  <>✓ Submit for Verification</>
+                )}
               </button>
               <button
                 onClick={() => navigate("/")}
                 type="button"
-                style={{ flex: 1 }}
+                className="btn-cancel"
               >
-                Cancel
+                ← Cancel
               </button>
             </div>
           </form>
